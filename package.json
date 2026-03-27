@@ -1,0 +1,14 @@
+{
+  "name": "quickbite-order-tracker",
+  "version": "1.0.0",
+  "description": "QuickBite — Professional Food Order Tracker with AI Agent",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.20.9",
+    "@octokit/rest": "^20.1.2",
+    "express": "^4.22.1"
+  }
+}
