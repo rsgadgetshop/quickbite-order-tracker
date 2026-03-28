@@ -67,6 +67,8 @@ body{background:#F3F4F6;min-height:100vh;padding:24px 16px}
 .btn-next{font-size:11px;background:#E8470A;color:#fff;border:none;border-radius:6px;padding:4px 10px;cursor:pointer;transition:background 0.2s;font-weight:500}
 .btn-next:hover{background:#C73D08}
 .btn-next.disabled{background:#E5E7EB;color:#9CA3AF;cursor:default}
+.btn-cancel{font-size:11px;background:#991B1B;color:#fff;border:none;border-radius:6px;padding:4px 10px;cursor:pointer;transition:background 0.2s;font-weight:500;margin-top:4px}
+.btn-cancel:hover{background:#7F1D1D}
 
 /* Empty state */
 .empty{text-align:center;padding:48px 24px;color:#9CA3AF}
@@ -120,6 +122,7 @@ body{background:#F3F4F6;min-height:100vh;padding:24px 16px}
       <span class="chip" onclick="setFilter('preparing', this)">Preparing</span>
       <span class="chip" onclick="setFilter('ready', this)">Ready</span>
       <span class="chip" onclick="setFilter('delivered', this)">Delivered</span>
+      <span class="chip" onclick="setFilter('cancelled', this)">Cancelled</span>
     </div>
     <div class="search-box">
       <svg width="14" height="14" fill="none" stroke="#9CA3AF" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
@@ -233,6 +236,16 @@ async function advanceStatus(id) {
   updateStats();
 }
 
+async function cancelOrder(id) {
+  const res = await fetch(`/orders/${id}`, {
+    method: 'DELETE'
+  });
+  const updated = await res.json();
+  orders = orders.map(o => o.id === id ? updated : o);
+  renderOrders();
+  updateStats();
+}
+
 function setFilter(filter, el) {
   currentFilter = filter;
   document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
@@ -261,6 +274,7 @@ function renderOrders() {
     const isGreen = o.status === 'delivered';
     const nextLbl = NEXT_LABEL[o.status];
     const canAdvance = nextLbl !== '';
+    const canCancel = o.status === 'placed';
     const deliveryTime = DELIVERY_TIME[o.status] || '';
     return `
     <li class="order-item">
@@ -281,6 +295,7 @@ function renderOrders() {
         <span class="order-amount">₹${o.amount}</span>
         ${deliveryTime ? `<div class="delivery-time">${deliveryTime}</div>` : ''}
         ${canAdvance ? `<button class="btn-next" onclick="advanceStatus(${o.id})">${nextLbl}</button>` : ''}
+        ${canCancel ? `<button class="btn-cancel" onclick="cancelOrder(${o.id})">Cancel</button>` : ''}
       </div>
     </li>`;
   }).join('');
