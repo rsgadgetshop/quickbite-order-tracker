@@ -54,6 +54,7 @@ body{background:#F3F4F6;min-height:100vh;padding:24px 16px}
 .progress-fill{height:3px;border-radius:2px;background:#E8470A;transition:width 0.4s}
 .progress-fill.green{background:#059669}
 .progress-time{font-size:10px;color:#9CA3AF;white-space:nowrap}
+.delivery-time{font-size:10px;color:#6B7280;margin-top:4px;font-weight:500}
 
 .order-right{display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0}
 .badge{font-size:11px;padding:3px 10px;border-radius:20px;font-weight:600;white-space:nowrap}
@@ -179,6 +180,7 @@ const STATUS_LABELS = { placed:'Placed', preparing:'Preparing', ready:'Ready', d
 const PROGRESS = { placed:15, preparing:55, ready:100, delivered:100, cancelled:0 };
 const ICON_BG = { placed:'#EFF6FF', preparing:'#FEF9C3', ready:'#ECFDF5', delivered:'#F0FDF4', cancelled:'#FEF2F2' };
 const NEXT_LABEL = { placed:'Start Prep', preparing:'Mark Ready', ready:'Mark Delivered', delivered:'', cancelled:'' };
+const DELIVERY_TIME = { placed:'30-35 mins', preparing:'15-20 mins', ready:'2-3 mins', delivered:'Delivered On Time', cancelled:'' };
 
 let orders = [];
 let currentFilter = 'all';
@@ -254,6 +256,7 @@ function renderOrders() {
     const isGreen = o.status === 'delivered';
     const nextLbl = NEXT_LABEL[o.status];
     const canAdvance = nextLbl !== '';
+    const deliveryTime = DELIVERY_TIME[o.status] || '';
     return `
     <li class="order-item">
       <div class="food-icon" style="background:${ICON_BG[o.status]}">${o.icon}</div>
@@ -267,6 +270,7 @@ function renderOrders() {
           <div class="progress-bar"><div class="progress-fill ${isGreen?'green':''}" style="width:${prog}%"></div></div>
           <span class="progress-time">${o.createdAt}</span>
         </div>
+        ${deliveryTime ? `<div class="delivery-time">${deliveryTime}</div>` : ''}
       </div>
       <div class="order-right">
         <span class="badge ${o.status}">${STATUS_LABELS[o.status]}</span>
