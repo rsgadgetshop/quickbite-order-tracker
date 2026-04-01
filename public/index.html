@@ -155,11 +155,11 @@ body{background:var(--bg-primary);min-height:100vh;padding:24px 16px}
   <!-- Toolbar -->
   <div class="toolbar">
     <div class="filters" id="filters">
-      <span class="chip active" onclick="setFilter('all', this)">All</span>
-      <span class="chip" onclick="setFilter('placed', this)">Placed</span>
-      <span class="chip" onclick="setFilter('preparing', this)">Preparing</span>
-      <span class="chip" onclick="setFilter('ready', this)">Ready</span>
-      <span class="chip" onclick="setFilter('delivered', this)">Delivered</span>
+      <span class="chip active" onclick="setFilter('all', this)">All <span id="count-all">(0)</span></span>
+      <span class="chip" onclick="setFilter('placed', this)">Placed <span id="count-placed">(0)</span></span>
+      <span class="chip" onclick="setFilter('preparing', this)">Preparing <span id="count-preparing">(0)</span></span>
+      <span class="chip" onclick="setFilter('ready', this)">Ready <span id="count-ready">(0)</span></span>
+      <span class="chip" onclick="setFilter('delivered', this)">Delivered <span id="count-delivered">(0)</span></span>
     </div>
     <div class="search-box">
       <svg width="14" height="14" fill="none" stroke="var(--text-muted)" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
@@ -263,6 +263,7 @@ async function loadOrders() {
   orders = await res.json();
   renderOrders();
   updateStats();
+  updateFilterCounts();
 }
 
 async function placeOrder() {
@@ -281,6 +282,7 @@ async function placeOrder() {
   closeModal();
   renderOrders();
   updateStats();
+  updateFilterCounts();
 }
 
 async function advanceStatus(id) {
@@ -298,6 +300,7 @@ async function advanceStatus(id) {
   orders = orders.map(o => o.id === id ? updated : o);
   renderOrders();
   updateStats();
+  updateFilterCounts();
 }
 
 function setFilter(filter, el) {
@@ -305,6 +308,22 @@ function setFilter(filter, el) {
   document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
   el.classList.add('active');
   renderOrders();
+}
+
+function updateFilterCounts() {
+  const counts = {
+    all: orders.filter(o => o.status !== 'cancelled').length,
+    placed: orders.filter(o => o.status === 'placed').length,
+    preparing: orders.filter(o => o.status === 'preparing').length,
+    ready: orders.filter(o => o.status === 'ready').length,
+    delivered: orders.filter(o => o.status === 'delivered').length
+  };
+  
+  document.getElementById('count-all').textContent = `(${counts.all})`;
+  document.getElementById('count-placed').textContent = `(${counts.placed})`;
+  document.getElementById('count-preparing').textContent = `(${counts.preparing})`;
+  document.getElementById('count-ready').textContent = `(${counts.ready})`;
+  document.getElementById('count-delivered').textContent = `(${counts.delivered})`;
 }
 
 function renderOrders() {
