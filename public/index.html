@@ -5,56 +5,85 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>QuickBite — Order Tracker</title>
 <style>
-*{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
-body{background:#F3F4F6;min-height:100vh;padding:24px 16px}
+:root {
+  --bg-primary: #F3F4F6;
+  --bg-secondary: #fff;
+  --bg-tertiary: #FAFAFA;
+  --border-color: #F3F4F6;
+  --border-light: #E5E7EB;
+  --text-primary: #111827;
+  --text-secondary: #6B7280;
+  --text-muted: #9CA3AF;
+  --accent: #E8470A;
+  --accent-hover: #C73D08;
+}
 
-.app{max-width:780px;margin:0 auto;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 32px rgba(0,0,0,0.08)}
+:root.dark {
+  --bg-primary: #111827;
+  --bg-secondary: #1F2937;
+  --bg-tertiary: #374151;
+  --border-color: #374151;
+  --border-light: #4B5563;
+  --text-primary: #F9FAFB;
+  --text-secondary: #D1D5DB;
+  --text-muted: #9CA3AF;
+  --accent: #E8470A;
+  --accent-hover: #C73D08;
+}
+
+*{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
+body{background:var(--bg-primary);min-height:100vh;padding:24px 16px}
+
+.app{max-width:780px;margin:0 auto;background:var(--bg-secondary);border-radius:16px;overflow:hidden;box-shadow:0 4px 32px rgba(0,0,0,0.08)}
 
 /* Top Bar */
 .topbar{background:#E8470A;padding:16px 24px;display:flex;align-items:center;justify-content:space-between}
 .topbar-left h1{color:#fff;font-size:18px;font-weight:700;letter-spacing:-0.3px}
 .topbar-left p{color:rgba(255,255,255,0.75);font-size:12px;margin-top:2px}
+.topbar-right{display:flex;align-items:center;gap:12px}
 .btn-new{background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);color:#fff;padding:8px 16px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;transition:background 0.2s}
 .btn-new:hover{background:rgba(255,255,255,0.25)}
+.dark-toggle{background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);color:#fff;padding:8px;border-radius:8px;cursor:pointer;transition:background 0.2s;display:flex;align-items:center;justify-content:center;width:36px;height:36px;font-size:16px}
+.dark-toggle:hover{background:rgba(255,255,255,0.25)}
 
 /* Stats */
-.stats{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid #F3F4F6}
-.stat{padding:14px 16px;text-align:center;border-right:1px solid #F3F4F6}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid var(--border-color)}
+.stat{padding:14px 16px;text-align:center;border-right:1px solid var(--border-color)}
 .stat:last-child{border-right:none}
-.stat-val{font-size:22px;font-weight:700;color:#111827}
+.stat-val{font-size:22px;font-weight:700;color:var(--text-primary)}
 .stat-val.orange{color:#E8470A}
 .stat-val.green{color:#059669}
-.stat-label{font-size:11px;color:#9CA3AF;margin-top:2px;text-transform:uppercase;letter-spacing:0.4px}
+.stat-label{font-size:11px;color:var(--text-muted);margin-top:2px;text-transform:uppercase;letter-spacing:0.4px}
 
 /* Toolbar */
-.toolbar{padding:12px 24px;border-bottom:1px solid #F3F4F6;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.toolbar{padding:12px 24px;border-bottom:1px solid var(--border-color);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
 .filters{display:flex;gap:6px;flex-wrap:wrap}
-.chip{font-size:12px;padding:5px 12px;border-radius:20px;border:1px solid #E5E7EB;color:#6B7280;background:#fff;cursor:pointer;transition:all 0.15s;font-weight:500}
+.chip{font-size:12px;padding:5px 12px;border-radius:20px;border:1px solid var(--border-light);color:var(--text-secondary);background:var(--bg-secondary);cursor:pointer;transition:all 0.15s;font-weight:500}
 .chip:hover{border-color:#E8470A;color:#E8470A}
 .chip.active{background:#E8470A;color:#fff;border-color:#E8470A}
-.search-box{display:flex;align-items:center;gap:8px;border:1px solid #E5E7EB;border-radius:8px;padding:6px 12px;flex:1;max-width:220px}
-.search-box input{border:none;outline:none;font-size:13px;color:#111827;width:100%;background:transparent}
-.search-box input::placeholder{color:#9CA3AF}
+.search-box{display:flex;align-items:center;gap:8px;border:1px solid var(--border-light);border-radius:8px;padding:6px 12px;flex:1;max-width:220px;background:var(--bg-secondary)}
+.search-box input{border:none;outline:none;font-size:13px;color:var(--text-primary);width:100%;background:transparent}
+.search-box input::placeholder{color:var(--text-muted)}
 
 /* Order List */
 .order-list{list-style:none}
-.order-item{display:flex;align-items:center;gap:14px;padding:14px 24px;border-bottom:1px solid #F9FAFB;transition:background 0.15s;cursor:pointer}
-.order-item:hover{background:#FAFAFA}
+.order-item{display:flex;align-items:center;gap:14px;padding:14px 24px;border-bottom:1px solid var(--border-color);transition:background 0.15s;cursor:pointer}
+.order-item:hover{background:var(--bg-tertiary)}
 .order-item:last-child{border-bottom:none}
 
 .food-icon{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
 
 .order-details{flex:1;min-width:0}
 .order-top{display:flex;align-items:center;gap:8px;margin-bottom:3px}
-.order-name{font-size:13px;font-weight:600;color:#111827;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.order-id{font-size:11px;color:#9CA3AF}
-.order-items{font-size:12px;color:#6B7280;margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.order-name{font-size:13px;font-weight:600;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.order-id{font-size:11px;color:var(--text-muted)}
+.order-items{font-size:12px;color:var(--text-secondary);margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .progress-wrap{display:flex;align-items:center;gap:8px}
-.progress-bar{flex:1;height:3px;background:#F3F4F6;border-radius:2px}
+.progress-bar{flex:1;height:3px;background:var(--border-color);border-radius:2px}
 .progress-fill{height:3px;border-radius:2px;background:#E8470A;transition:width 0.4s}
 .progress-fill.green{background:#059669}
-.progress-time{font-size:10px;color:#9CA3AF;white-space:nowrap}
-.delivery-time{font-size:10px;color:#6B7280;margin-top:4px;font-weight:500}
+.progress-time{font-size:10px;color:var(--text-muted);white-space:nowrap}
+.delivery-time{font-size:10px;color:var(--text-secondary);margin-top:4px;font-weight:500}
 
 .order-right{display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0}
 .badge{font-size:11px;padding:3px 10px;border-radius:20px;font-weight:600;white-space:nowrap}
@@ -63,30 +92,30 @@ body{background:#F3F4F6;min-height:100vh;padding:24px 16px}
 .badge.ready{background:#ECFDF5;color:#065F46}
 .badge.delivered{background:#F0FDF4;color:#166534}
 .badge.cancelled{background:#FEF2F2;color:#991B1B}
-.order-amount{font-size:14px;font-weight:700;color:#111827}
+.order-amount{font-size:14px;font-weight:700;color:var(--text-primary)}
 .btn-next{font-size:11px;background:#E8470A;color:#fff;border:none;border-radius:6px;padding:4px 10px;cursor:pointer;transition:background 0.2s;font-weight:500}
 .btn-next:hover{background:#C73D08}
-.btn-next.disabled{background:#E5E7EB;color:#9CA3AF;cursor:default}
+.btn-next.disabled{background:var(--border-light);color:var(--text-muted);cursor:default}
 
 /* Empty state */
-.empty{text-align:center;padding:48px 24px;color:#9CA3AF}
+.empty{text-align:center;padding:48px 24px;color:var(--text-muted)}
 .empty p{font-size:14px;margin-top:8px}
 
 /* Footer */
-.app-footer{padding:12px 24px;border-top:1px solid #F3F4F6;display:flex;justify-content:space-between;align-items:center}
-.app-footer span{font-size:12px;color:#9CA3AF}
+.app-footer{padding:12px 24px;border-top:1px solid var(--border-color);display:flex;justify-content:space-between;align-items:center}
+.app-footer span{font-size:12px;color:var(--text-muted)}
 
 /* Modal Overlay */
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:100;align-items:center;justify-content:center}
 .modal-overlay.open{display:flex}
-.modal{background:#fff;border-radius:16px;padding:24px;width:100%;max-width:440px;margin:16px}
-.modal h2{font-size:16px;font-weight:700;color:#111827;margin-bottom:20px}
+.modal{background:var(--bg-secondary);border-radius:16px;padding:24px;width:100%;max-width:440px;margin:16px}
+.modal h2{font-size:16px;font-weight:700;color:var(--text-primary);margin-bottom:20px}
 .form-group{margin-bottom:16px}
-.form-group label{display:block;font-size:12px;font-weight:600;color:#374151;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.4px}
-.form-group input,.form-group select{width:100%;border:1px solid #E5E7EB;border-radius:8px;padding:9px 12px;font-size:14px;color:#111827;outline:none;transition:border-color 0.2s}
+.form-group label{display:block;font-size:12px;font-weight:600;color:var(--text-secondary);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.4px}
+.form-group input,.form-group select{width:100%;border:1px solid var(--border-light);border-radius:8px;padding:9px 12px;font-size:14px;color:var(--text-primary);outline:none;transition:border-color 0.2s;background:var(--bg-secondary)}
 .form-group input:focus,.form-group select:focus{border-color:#E8470A}
 .modal-actions{display:flex;gap:10px;margin-top:20px}
-.btn-cancel{flex:1;padding:10px;border:1px solid #E5E7EB;border-radius:8px;background:#fff;color:#374151;font-size:14px;cursor:pointer;font-weight:500}
+.btn-cancel{flex:1;padding:10px;border:1px solid var(--border-light);border-radius:8px;background:var(--bg-secondary);color:var(--text-secondary);font-size:14px;cursor:pointer;font-weight:500}
 .btn-submit{flex:2;padding:10px;border:none;border-radius:8px;background:#E8470A;color:#fff;font-size:14px;cursor:pointer;font-weight:600;transition:background 0.2s}
 .btn-submit:hover{background:#C73D08}
 </style>
@@ -101,7 +130,10 @@ body{background:#F3F4F6;min-height:100vh;padding:24px 16px}
       <h1>QuickBite</h1>
       <p>Live Order Tracker</p>
     </div>
-    <button class="btn-new" onclick="openModal()">+ New Order</button>
+    <div class="topbar-right">
+      <button class="dark-toggle" onclick="toggleDarkMode()" id="dark-toggle">🌙</button>
+      <button class="btn-new" onclick="openModal()">+ New Order</button>
+    </div>
   </div>
 
   <!-- Stats -->
@@ -122,7 +154,7 @@ body{background:#F3F4F6;min-height:100vh;padding:24px 16px}
       <span class="chip" onclick="setFilter('delivered', this)">Delivered</span>
     </div>
     <div class="search-box">
-      <svg width="14" height="14" fill="none" stroke="#9CA3AF" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <svg width="14" height="14" fill="none" stroke="var(--text-muted)" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
       <input type="text" id="search" placeholder="Search customer..." oninput="renderOrders()"/>
     </div>
   </div>
@@ -186,6 +218,38 @@ let orders = [];
 let currentFilter = 'all';
 let orderCounter = 1040;
 
+// Dark mode functionality
+function toggleDarkMode() {
+  const root = document.documentElement;
+  const toggleBtn = document.getElementById('dark-toggle');
+  const isDark = root.classList.contains('dark');
+  
+  if (isDark) {
+    root.classList.remove('dark');
+    toggleBtn.textContent = '🌙';
+    localStorage.setItem('darkMode', 'false');
+  } else {
+    root.classList.add('dark');
+    toggleBtn.textContent = '☀️';
+    localStorage.setItem('darkMode', 'true');
+  }
+}
+
+// Initialize dark mode from localStorage
+function initializeDarkMode() {
+  const savedMode = localStorage.getItem('darkMode');
+  const root = document.documentElement;
+  const toggleBtn = document.getElementById('dark-toggle');
+  
+  if (savedMode === 'true') {
+    root.classList.add('dark');
+    toggleBtn.textContent = '☀️';
+  } else {
+    root.classList.remove('dark');
+    toggleBtn.textContent = '🌙';
+  }
+}
+
 async function loadOrders() {
   const res = await fetch('/orders');
   orders = await res.json();
@@ -247,7 +311,7 @@ function renderOrders() {
   document.getElementById('footer-count').textContent = `${filtered.length} order${filtered.length !== 1 ? 's' : ''}`;
 
   if (filtered.length === 0) {
-    list.innerHTML = `<div class="empty"><svg width="40" height="40" fill="none" stroke="#D1D5DB" stroke-width="1.5" viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/></svg><p>No orders found</p></div>`;
+    list.innerHTML = `<div class="empty"><svg width="40" height="40" fill="none" stroke="var(--text-muted)" stroke-width="1.5" viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/></svg><p>No orders found</p></div>`;
     return;
   }
 
@@ -305,6 +369,8 @@ document.getElementById('modal').addEventListener('click', function(e) {
   if (e.target === this) closeModal();
 });
 
+// Initialize dark mode on page load
+initializeDarkMode();
 loadOrders();
 </script>
 </body>
