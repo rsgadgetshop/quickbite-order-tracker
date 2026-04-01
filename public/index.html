@@ -37,10 +37,17 @@ body{background:var(--bg-primary);min-height:100vh;padding:24px 16px}
 .app{max-width:780px;margin:0 auto;background:var(--bg-secondary);border-radius:16px;overflow:hidden;box-shadow:0 4px 32px rgba(0,0,0,0.08)}
 
 /* Top Bar */
-.topbar{background:#E8470A;padding:16px 24px;display:flex;align-items:center;justify-content:space-between}
-.topbar-left h1{color:#fff;font-size:18px;font-weight:700;letter-spacing:-0.3px}
-.topbar-left p{color:rgba(255,255,255,0.75);font-size:12px;margin-top:2px}
+.topbar{background:#E8470A;padding:20px 24px;display:flex;align-items:center;justify-content:space-between}
+.topbar-left{display:flex;align-items:center;gap:20px}
+.topbar-brand h1{color:#fff;font-size:18px;font-weight:700;letter-spacing:-0.3px;margin:0}
+.topbar-brand p{color:rgba(255,255,255,0.75);font-size:12px;margin:2px 0 0 0}
+.live-counter{background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);color:#fff;padding:6px 12px;border-radius:8px;font-size:13px;font-weight:600;display:flex;align-items:center;gap:6px}
+.live-counter .pulse{display:inline-block;width:8px;height:8px;background:#4ADE80;border-radius:50%;animation:pulse 2s infinite}
+@keyframes pulse{0%{opacity:1;transform:scale(1)}50%{opacity:0.5;transform:scale(1.05)}100%{opacity:1;transform:scale(1)}}
 .topbar-right{display:flex;align-items:center;gap:12px}
+.datetime-display{color:#fff;text-align:right;font-size:12px}
+.current-date{font-weight:500;margin-bottom:2px}
+.current-time{color:rgba(255,255,255,0.8);font-size:11px}
 .btn-new{background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);color:#fff;padding:8px 16px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;transition:background 0.2s}
 .btn-new:hover{background:rgba(255,255,255,0.25)}
 .dark-toggle{background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);color:#fff;padding:8px;border-radius:8px;cursor:pointer;transition:background 0.2s;display:flex;align-items:center;justify-content:center;width:36px;height:36px;font-size:16px}
@@ -135,10 +142,20 @@ body{background:var(--bg-primary);min-height:100vh;padding:24px 16px}
   <!-- Top Bar -->
   <div class="topbar">
     <div class="topbar-left">
-      <h1>QuickBite</h1>
-      <p>Live Order Tracker</p>
+      <div class="topbar-brand">
+        <h1>QuickBite</h1>
+        <p>Live Kitchen Dashboard</p>
+      </div>
+      <div class="live-counter">
+        <span class="pulse"></span>
+        <span id="active-orders-count">0</span> Active Orders
+      </div>
     </div>
     <div class="topbar-right">
+      <div class="datetime-display">
+        <div class="current-date" id="current-date"></div>
+        <div class="current-time" id="current-time"></div>
+      </div>
       <button class="dark-toggle" onclick="toggleDarkMode()" id="dark-toggle">🌙</button>
       <button class="btn-new" onclick="openModal()">+ New Order</button>
     </div>
@@ -258,12 +275,29 @@ function initializeDarkMode() {
   }
 }
 
+// Update date and time display
+function updateDateTime() {
+  const now = new Date();
+  const dateOptions = { weekday: 'short', month: 'short', day: 'numeric' };
+  const timeOptions = { hour: '2-digit', minute: '2-digit', hour12: true };
+  
+  document.getElementById('current-date').textContent = now.toLocaleDateString('en-US', dateOptions);
+  document.getElementById('current-time').textContent = now.toLocaleTimeString('en-US', timeOptions);
+}
+
+// Update active orders counter
+function updateActiveOrdersCounter() {
+  const activeCount = orders.filter(o => o.status !== 'delivered' && o.status !== 'cancelled').length;
+  document.getElementById('active-orders-count').textContent = activeCount;
+}
+
 async function loadOrders() {
   const res = await fetch('/orders');
   orders = await res.json();
   renderOrders();
   updateStats();
   updateFilterCounts();
+  updateActiveOrdersCounter();
 }
 
 async function placeOrder() {
@@ -283,6 +317,7 @@ async function placeOrder() {
   renderOrders();
   updateStats();
   updateFilterCounts();
+  updateActiveOrdersCounter();
 }
 
 async function advanceStatus(id) {
@@ -301,6 +336,7 @@ async function advanceStatus(id) {
   renderOrders();
   updateStats();
   updateFilterCounts();
+  updateActiveOrdersCounter();
 }
 
 function setFilter(filter, el) {
@@ -396,8 +432,13 @@ document.getElementById('modal').addEventListener('click', function(e) {
   if (e.target === this) closeModal();
 });
 
-// Initialize dark mode on page load
+// Initialize dark mode and datetime on page load
 initializeDarkMode();
+updateDateTime();
+
+// Update time every minute
+setInterval(updateDateTime, 60000);
+
 loadOrders();
 </script>
 </body>
